@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule de Raids</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #e2e8f0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: #94a3b8;
+            font-size: 1.1em;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .control-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        label {
+            color: #cbd5e1;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        input, select {
+            padding: 10px 15px;
+            background: #1e293b;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            color: #e2e8f0;
+            font-size: 0.95em;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #60a5fa;
+            box-shadow: 0 0 10px rgba(96, 165, 250, 0.3);
+        }
+
+        button {
+            padding: 10px 25px;
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95em;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .view-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #334155;
+            padding-bottom: 0;
+        }
+
+        .tab-btn {
+            padding: 12px 25px;
+            background: transparent;
+            border: none;
+            border-bottom: 3px solid transparent;
+            color: #94a3b8;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            border-bottom-color: #60a5fa;
+            color: #60a5fa;
+        }
+
+        .tab-btn:hover {
+            color: #cbd5e1;
+        }
+
+        .view {
+            display: none;
+        }
+
+        .view.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* WEEKLY VIEW */
+        .weekly-container {
+            overflow-x: auto;
+            background: #0f172a;
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .weekly-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1000px;
+        }
+
+        .weekly-table th {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            padding: 15px;
+            text-align: center;
+            border-bottom: 3px solid #334155;
+            font-weight: 700;
+            color: #60a5fa;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .weekly-table td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #1e293b;
+            font-size: 0.9em;
+        }
+
+        .weekly-table tbody tr:hover {
+            background: #1e293b;
+            transition: background 0.2s ease;
+        }
+
+        .time-cell {
+            font-weight: 600;
+            color: #94a3b8;
+            min-width: 60px;
+            background: #0a0f1a;
+        }
+
+        .day-column {
+            background: rgba(30, 41, 59, 0.5);
+        }
+
+        .stone-badge, .chest-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.85em;
+            margin: 2px;
+        }
+
+        .stone-orc {
+            background: #7c3aed;
+            color: white;
+        }
+
+        .stone-arkanum {
+            background: #0ea5e9;
+            color: white;
+        }
+
+        .stone-shrine {
+            background: #f97316;
+            color: white;
+        }
+
+        .stone-selo {
+            background: #ec4899;
+            color: white;
+        }
+
+        .chest-orc {
+            background: #7c3aed;
+            color: white;
+        }
+
+        .chest-arkanum {
+            background: #0ea5e9;
+            color: white;
+        }
+
+        .chest-shrine {
+            background: #f97316;
+            color: white;
+        }
+
+        .chest-selo {
+            background: #ec4899;
+            color: white;
+        }
+
+        /* SEARCH VIEW */
+        .search-container {
+            background: #0f172a;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .results {
+            margin-top: 20px;
+        }
+
+        .result-item {
+            background: #1e293b;
+            border-left: 4px solid #60a5fa;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .result-item:hover {
+            background: #334155;
+            transform: translateX(5px);
+            transition: all 0.2s ease;
+        }
+
+        .result-label {
+            color: #94a3b8;
+            font-size: 0.85em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .result-value {
+            color: #e2e8f0;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .no-results {
+            text-align: center;
+            color: #64748b;
+            padding: 40px;
+            font-size: 1.1em;
+        }
+
+        /* FILTER LEGEND */
+        .legend {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: #1e293b;
+            border-radius: 8px;
+            justify-content: center;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9em;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #64748b;
+        }
+
+        .empty-state-icon {
+            font-size: 3em;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .result-item {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            .control-group {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            input, select, button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚔️ Schedule de Raids</h1>
+            <p class="subtitle">Encontre o melhor horário para suas dungeons</p>
+        </header>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: #7c3aed;"></div>
+                <span>Orc</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #0ea5e9;"></div>
+                <span>Arkanum</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #f97316;"></div>
+                <span>Shrine</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #ec4899;"></div>
+                <span>Selo</span>
+            </div>
+        </div>
+
+        <div class="view-tabs">
+            <button class="tab-btn active" onclick="switchView('weekly')">📅 Semanal</button>
+            <button class="tab-btn" onclick="switchView('search')">🔍 Buscar por Horário</button>
+            <button class="tab-btn" onclick="switchView('type')">🎯 Buscar por Tipo</button>
+        </div>
+
+        <!-- WEEKLY VIEW -->
+        <div id="weekly" class="view active">
+            <div class="weekly-container">
+                <table class="weekly-table">
+                    <thead>
+                        <tr>
+                            <th>Hora</th>
+                            <th>Segunda</th>
+                            <th>Terça</th>
+                            <th>Quarta</th>
+                            <th>Quinta</th>
+                            <th>Sexta</th>
+                            <th>Sábado</th>
+                            <th>Domingo</th>
+                        </tr>
+                    </thead>
+                    <tbody id="weeklyTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- SEARCH BY TIME VIEW -->
+        <div id="search" class="view">
+            <div class="search-container">
+                <div class="controls">
+                    <div class="control-group">
+                        <label for="timeSearch">Selecione um horário:</label>
+                        <input type="time" id="timeSearch" value="12:00">
+                    </div>
+                    <button onclick="searchByTime()">Buscar</button>
+                    <button onclick="resetSearch()" style="background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);">Limpar</button>
+                </div>
+                <div class="results" id="timeResults"></div>
+            </div>
+        </div>
+
+        <!-- SEARCH BY TYPE VIEW -->
+        <div id="type" class="view">
+            <div class="search-container">
+                <div class="controls">
+                    <div class="control-group">
+                        <label for="stoneFilter">Stone:</label>
+                        <select id="stoneFilter">
+                            <option value="">Todos</option>
+                            <option value="Orc">Orc</option>
+                            <option value="Arkanum">Arkanum</option>
+                            <option value="Shrine">Shrine</option>
+                            <option value="Selo">Selo</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label for="chestFilter">Chest:</label>
+                        <select id="chestFilter">
+                            <option value="">Todos</option>
+                            <option value="Orc">Orc</option>
+                            <option value="Arkanum">Arkanum</option>
+                            <option value="Shrine">Shrine</option>
+                            <option value="Selo">Selo</option>
+                        </select>
+                    </div>
+                    <button onclick="searchByType()">Buscar</button>
+                    <button onclick="resetTypeSearch()" style="background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);">Limpar</button>
+                </div>
+                <div class="results" id="typeResults"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const schedule = {
+            "Segunda": { "00:00": { "stone": "Selo", "chest": "Orc" }, "01:00": { "stone": "Shrine", "chest": "Selo" }, "02:00": { "stone": "Arkenum", "chest": "Shrine" }, "03:00": { "stone": "Orc", "chest": "Arkenum" }, "04:00": { "stone": "Selo", "chest": "Orc" }, "05:00": { "stone": "Shrine", "chest": "Selo" }, "06:00": { "stone": "Arkenum", "chest": "Shrine" }, "07:00": { "stone": "Orc", "chest": "Arkenum" }, "08:00": { "stone": "Selo", "chest": "Orc" }, "09:00": { "stone": "Shrine", "chest": "Selo" }, "10:00": { "stone": "Arkenum", "chest": "Shrine" }, "11:00": { "stone": "Orc", "chest": "Arkenum" }, "12:00": { "stone": "Selo", "chest": "Orc" }, "13:00": { "stone": "Shrine", "chest": "Selo" }, "14:00": { "stone": "Arkenum", "chest": "Shrine" }, "15:00": { "stone": "Orc", "chest": "Arkenum" }, "16:00": { "stone": "Selo", "chest": "Orc" }, "17:00": { "stone": "Shrine", "chest": "Selo" }, "18:00": { "stone": "Arkenum", "chest": "Shrine" }, "19:00": { "stone": "Orc", "chest": "Arkenum" }, "20:00": { "stone": "Selo", "chest": "Orc" }, "21:00": { "stone": "Shrine", "chest": "Selo" }, "22:00": { "stone": "Arkenum", "chest": "Shrine" }, "23:00": { "stone": "Orc", "chest": "Arkenum" } },
+            "Terça": { "00:00": { "stone": "Sel", "chest": "Arkanum" }, "01:00": { "stone": "Shrine", "chest": "Orc" }, "02:00": { "stone": "Selo", "chest": "Arkanum" }, "03:00": { "stone": "Arkanum", "chest": "Shrine" }, "04:00": { "stone": "Orc", "chest": "Arkanum" }, "05:00": { "stone": "Selo", "chest": "Orc" }, "06:00": { "stone": "Shrine", "chest": "Selo" }, "07:00": { "stone": "Arkanum", "chest": "Shrine" }, "08:00": { "stone": "Orc", "chest": "Arkanum" }, "09:00": { "stone": "Selo", "chest": "Orc" }, "10:00": { "stone": "Shrine", "chest": "Selo" }, "11:00": { "stone": "Arkanum", "chest": "Shrine" }, "12:00": { "stone": "Orc", "chest": "Arkanum" }, "13:00": { "stone": "Selo", "chest": "Orc" }, "14:00": { "stone": "Shrine", "chest": "Selo" }, "15:00": { "stone": "Arkanum", "chest": "Shrine" }, "16:00": { "stone": "Orc", "chest": "Arkanum" }, "17:00": { "stone": "Selo", "chest": "Orc" }, "18:00": { "stone": "Shrine", "chest": "Selo" }, "19:00": { "stone": "Arkanum", "chest": "Shrine" }, "20:00": { "stone": "Orc", "chest": "Arkanum" }, "21:00": { "stone": "Selo", "chest": "Orc" }, "22:00": { "stone": "Shrine", "chest": "Selo" }, "23:00": { "stone": "Arkanum", "chest": "Shrine" } },
+            "Quarta": { "00:00": { "stone": "Arkanum", "chest": "Orc" }, "01:00": { "stone": "Shrine", "chest": "Arkanum" }, "02:00": { "stone": "Selo", "chest": "Orc" }, "03:00": { "stone": "Arkanum", "chest": "Shrine" }, "04:00": { "stone": "Orc", "chest": "Arkanum" }, "05:00": { "stone": "Orc", "chest": "Arkanum" }, "06:00": { "stone": "Selo", "chest": "Orc" }, "07:00": { "stone": "Arkanum", "chest": "Shrine" }, "08:00": { "stone": "Orc", "chest": "Arkanum" }, "09:00": { "stone": "Orc", "chest": "Arkanum" }, "10:00": { "stone": "Selo", "chest": "Orc" }, "11:00": { "stone": "Shrine", "chest": "Selo" }, "12:00": { "stone": "Arkanum", "chest": "Shrine" }, "13:00": { "stone": "Orc", "chest": "Arkanum" }, "14:00": { "stone": "Shrine", "chest": "Selo" }, "15:00": { "stone": "Shrine", "chest": "Selo" }, "16:00": { "stone": "Arkanum", "chest": "Shrine" }, "17:00": { "stone": "Orc", "chest": "Arkanum" }, "18:00": { "stone": "Shrine", "chest": "Selo" }, "19:00": { "stone": "Orc", "chest": "Arkanum" }, "20:00": { "stone": "Arkanum", "chest": "Shrine" }, "21:00": { "stone": "Selo", "chest": "Orc" }, "22:00": { "stone": "Selo", "chest": "Orc" }, "23:00": { "stone": "Shrine", "chest": "Arkanum" } },
+            "Quinta": { "00:00": { "stone": "Shrine", "chest": "Orc" }, "01:00": { "stone": "Shrine", "chest": "Orc" }, "02:00": { "stone": "Arkenum", "chest": "Shrine" }, "03:00": { "stone": "Orc", "chest": "Arkenum" }, "04:00": { "stone": "Arkenum", "chest": "Shrine" }, "05:00": { "stone": "Selo", "chest": "Orc" }, "06:00": { "stone": "Arkenum", "chest": "Shrine" }, "07:00": { "stone": "Arkenum", "chest": "Shrine" }, "08:00": { "stone": "Selo", "chest": "Orc" }, "09:00": { "stone": "Shrine", "chest": "Selo" }, "10:00": { "stone": "Arkenum", "chest": "Shrine" }, "11:00": { "stone": "Orc", "chest": "Arkenum" }, "12:00": { "stone": "Orc", "chest": "Arkanum" }, "13:00": { "stone": "Selo", "chest": "Orc" }, "14:00": { "stone": "Shrine", "chest": "Selo" }, "15:00": { "stone": "Shrine", "chest": "Selo" }, "16:00": { "stone": "Orc", "chest": "Arkanum" }, "17:00": { "stone": "Selo", "chest": "Orc" }, "18:00": { "stone": "Shrine", "chest": "Selo" }, "19:00": { "stone": "Arkenum", "chest": "Shrine" }, "20:00": { "stone": "Orc", "chest": "Arkanum" }, "21:00": { "stone": "Selo", "chest": "Orc" }, "22:00": { "stone": "Shrine", "chest": "Selo" }, "23:00": { "stone": "Arkenum", "chest": "Arkanum" } },
+            "Sexta": { "00:00": { "stone": "Arkanum", "chest": "Orc" }, "01:00": { "stone": "Orc", "chest": "Arkanum" }, "02:00": { "stone": "Selo", "chest": "Orc" }, "03:00": { "stone": "Arkenum", "chest": "Shrine" }, "04:00": { "stone": "Arkanum", "chest": "Shrine" }, "05:00": { "stone": "Selo", "chest": "Orc" }, "06:00": { "stone": "Shrine", "chest": "Selo" }, "07:00": { "stone": "Arkanum", "chest": "Shrine" }, "08:00": { "stone": "Shrine", "chest": "Selo" }, "09:00": { "stone": "Selo", "chest": "Orc" }, "10:00": { "stone": "Shrine", "chest": "Selo" }, "11:00": { "stone": "Shrine", "chest": "Selo" }, "12:00": { "stone": "Arkanum", "chest": "Shrine" }, "13:00": { "stone": "Orc", "chest": "Arkanum" }, "14:00": { "stone": "Selo", "chest": "Orc" }, "15:00": { "stone": "Selo", "chest": "Orc" }, "16:00": { "stone": "Arkanum", "chest": "Shrine" }, "17:00": { "stone": "Orc", "chest": "Arkanum" }, "18:00": { "stone": "Shrine", "chest": "Selo" }, "19:00": { "stone": "Shrine", "chest": "Selo" }, "20:00": { "stone": "Arkanum", "chest": "Shrine" }, "21:00": { "stone": "Selo", "chest": "Orc" }, "22:00": { "stone": "Selo", "chest": "Orc" }, "23:00": { "stone": "Arkenum", "chest": "Arkanum" } },
+            "Sábado": { "00:00": { "stone": "Shrine", "chest": "Selo" }, "01:00": { "stone": "Shrine", "chest": "Shrine" }, "02:00": { "stone": "Arkenum", "chest": "Selo" }, "03:00": { "stone": "Orc", "chest": "Arkanum" }, "04:00": { "stone": "Shrine", "chest": "Selo" }, "05:00": { "stone": "Orc", "chest": "Arkanum" }, "06:00": { "stone": "Selo", "chest": "Orc" }, "07:00": { "stone": "Shrine", "chest": "Shrine" }, "08:00": { "stone": "Shrine", "chest": "Selo" }, "09:00": { "stone": "Arkanum", "chest": "Shrine" }, "10:00": { "stone": "Orc", "chest": "Arkanum" }, "11:00": { "stone": "Selo", "chest": "Orc" }, "12:00": { "stone": "Shrine", "chest": "Selo" }, "13:00": { "stone": "Arkanum", "chest": "Shrine" }, "14:00": { "stone": "Arkanum", "chest": "Shrine" }, "15:00": { "stone": "Selo", "chest": "Orc" }, "16:00": { "stone": "Shrine", "chest": "Selo" }, "17:00": { "stone": "Arkanum", "chest": "Shrine" }, "18:00": { "stone": "Orc", "chest": "Arkanum" }, "19:00": { "stone": "Selo", "chest": "Orc" }, "20:00": { "stone": "Shrine", "chest": "Selo" }, "21:00": { "stone": "Arkanum", "chest": "Shrine" }, "22:00": { "stone": "Orc", "chest": "Arkanum" }, "23:00": { "stone": "Selo", "chest": "Orc" } },
+            "Domingo": { "00:00": { "stone": "Shrine", "chest": "Selo" }, "01:00": { "stone": "Arkanum", "chest": "Shrine" }, "02:00": { "stone": "Orc", "chest": "Arkanum" }, "03:00": { "stone": "Orc", "chest": "Arkanum" }, "04:00": { "stone": "Selo", "chest": "Orc" }, "05:00": { "stone": "Arkanum", "chest": "Shrine" }, "06:00": { "stone": "Orc", "chest": "Arkanum" }, "07:00": { "stone": "Shrine", "chest": "Selo" }, "08:00": { "stone": "Selo", "chest": "Orc" }, "09:00": { "stone": "Shrine", "chest": "Selo" }, "10:00": { "stone": "Arkanum", "chest": "Shrine" }, "11:00": { "stone": "Selo", "chest": "Orc" }, "12:00": { "stone": "Selo", "chest": "Orc" }, "13:00": { "stone": "Shrine", "chest": "Selo" }, "14:00": { "stone": "Arkanum", "chest": "Shrine" }, "15:00": { "stone": "Selo", "chest": "Orc" }, "16:00": { "stone": "Selo", "chest": "Orc" }, "17:00": { "stone": "Arkanum", "chest": "Shrine" }, "18:00": { "stone": "Arkanum", "chest": "Arkanum" }, "19:00": { "stone": "Orc", "chest": "Arkanum" }, "20:00": { "stone": "Selo", "chest": "Orc" }, "21:00": { "stone": "Shrine", "chest": "Selo" }, "22:00": { "stone": "Orc", "chest": "Arkanum" }, "23:00": { "stone": "Orc", "chest": "Arkanum" } }
+        };
+
+        const days = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"];
+        const hours = Array.from({length: 24}, (_, i) => String(i).padStart(2, '0') + ":00");
+
+        function getBadgeClass(type, category) {
+            return `${category}-${type.toLowerCase()}`;
+        }
+
+        function createBadge(type, category) {
+            return `<span class="stone-badge ${getBadgeClass(type, category)}">${type}</span>`;
+        }
+
+        function renderWeeklyTable() {
+            const tbody = document.getElementById('weeklyTableBody');
+            tbody.innerHTML = '';
+
+            hours.forEach(hour => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td class="time-cell">${hour}</td>`;
+
+                days.forEach(day => {
+                    const data = schedule[day][hour];
+                    tr.innerHTML += `
+                        <td class="day-column">
+                            ${createBadge(data.stone, 'stone')}
+                            <br>
+                            ${createBadge(data.chest, 'chest')}
+                        </td>
+                    `;
+                });
+
+                tbody.appendChild(tr);
+            });
+        }
+
+        function switchView(viewName) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById(viewName).classList.add('active');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            if (viewName === 'weekly') {
+                renderWeeklyTable();
+            }
+        }
+
+        function searchByTime() {
+            const timeInput = document.getElementById('timeSearch').value;
+            const [hours, minutes] = timeInput.split(':');
+            const time = `${String(hours).padStart(2, '0')}:${minutes}`;
+            const results = document.getElementById('timeResults');
+
+            let html = '';
+            days.forEach(day => {
+                const data = schedule[day][time];
+                if (data) {
+                    html += `
+                        <div class="result-item">
+                            <div>
+                                <div class="result-label">Dia</div>
+                                <div class="result-value">${day}</div>
+                            </div>
+                            <div>
+                                <div class="result-label">Horário</div>
+                                <div class="result-value">${time}</div>
+                            </div>
+                            <div>
+                                <div class="result-label">Stone</div>
+                                <div>${createBadge(data.stone, 'stone')}</div>
+                            </div>
+                            <div>
+                                <div class="result-label">Chest</div>
+                                <div>${createBadge(data.chest, 'chest')}</div>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+
+            results.innerHTML = html || '<div class="no-results">Nenhum resultado encontrado</div>';
+        }
+
+        function resetSearch() {
+            document.getElementById('timeSearch').value = '12:00';
+            document.getElementById('timeResults').innerHTML = '';
+        }
+
+        function searchByType() {
+            const stone = document.getElementById('stoneFilter').value;
+            const chest = document.getElementById('chestFilter').value;
+            const results = document.getElementById('typeResults');
+
+            let html = '';
+            let count = 0;
+
+            days.forEach(day => {
+                hours.forEach(hour => {
+                    const data = schedule[day][hour];
+                    const stoneMatch = !stone || data.stone.toLowerCase() === stone.toLowerCase();
+                    const chestMatch = !chest || data.chest.toLowerCase() === chest.toLowerCase();
+
+                    if (stoneMatch && chestMatch) {
+                        count++;
+                        html += `
+                            <div class="result-item">
+                                <div>
+                                    <div class="result-label">Dia</div>
+                                    <div class="result-value">${day}</div>
+                                </div>
+                                <div>
+                                    <div class="result-label">Horário</div>
+                                    <div class="result-value">${hour}</div>
+                                </div>
+                                <div>
+                                    <div class="result-label">Stone</div>
+                                    <div>${createBadge(data.stone, 'stone')}</div>
+                                </div>
+                                <div>
+                                    <div class="result-label">Chest</div>
+                                    <div>${createBadge(data.chest, 'chest')}</div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+            });
+
+            results.innerHTML = html ? `<div style="margin-bottom: 20px; color: #94a3b8;"><strong>${count}</strong> resultado(s) encontrado(s)</div>${html}` : '<div class="no-results">Nenhum resultado encontrado</div>';
+        }
+
+        function resetTypeSearch() {
+            document.getElementById('stoneFilter').value = '';
+            document.getElementById('chestFilter').value = '';
+            document.getElementById('typeResults').innerHTML = '';
+        }
+
+        // Render initial view
+        renderWeeklyTable();
+    </script>
+</body>
+</html>
