@@ -193,54 +193,37 @@
             background: rgba(30, 41, 59, 0.5);
         }
 
+        .cell-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .cell-row-label {
+            font-size: 0.7em;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
         .stone-badge, .chest-badge {
             display: inline-block;
-            padding: 6px 12px;
+            padding: 4px 10px;
             border-radius: 6px;
             font-weight: 600;
-            font-size: 0.85em;
-            margin: 2px;
+            font-size: 0.8em;
+            margin: 1px;
         }
 
-        .stone-orc {
-            background: #7c3aed;
-            color: white;
-        }
+        .stone-orc { background: #7c3aed; color: white; }
+        .stone-arkanum { background: #0ea5e9; color: white; }
+        .stone-shrine { background: #f97316; color: white; }
+        .stone-selo { background: #ec4899; color: white; }
 
-        .stone-arkanum {
-            background: #0ea5e9;
-            color: white;
-        }
-
-        .stone-shrine {
-            background: #f97316;
-            color: white;
-        }
-
-        .stone-selo {
-            background: #ec4899;
-            color: white;
-        }
-
-        .chest-orc {
-            background: #7c3aed;
-            color: white;
-        }
-
-        .chest-arkanum {
-            background: #0ea5e9;
-            color: white;
-        }
-
-        .chest-shrine {
-            background: #f97316;
-            color: white;
-        }
-
-        .chest-selo {
-            background: #ec4899;
-            color: white;
-        }
+        .chest-orc { background: #4c1d95; color: white; }
+        .chest-arkanum { background: #0369a1; color: white; }
+        .chest-shrine { background: #c2410c; color: white; }
+        .chest-selo { background: #9d174d; color: white; }
 
         /* SEARCH VIEW */
         .search-container {
@@ -412,6 +395,19 @@
             <div class="search-container">
                 <div class="controls">
                     <div class="control-group">
+                        <label for="daySearch">Selecione um dia:</label>
+                        <select id="daySearch">
+                            <option value="">Todos os dias</option>
+                            <option value="Segunda">Segunda</option>
+                            <option value="Terça">Terça</option>
+                            <option value="Quarta">Quarta</option>
+                            <option value="Quinta">Quinta</option>
+                            <option value="Sexta">Sexta</option>
+                            <option value="Sábado">Sábado</option>
+                            <option value="Domingo">Domingo</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
                         <label for="timeSearch">Selecione um horário:</label>
                         <input type="time" id="timeSearch" value="12:00">
                     </div>
@@ -426,6 +422,19 @@
         <div id="type" class="view">
             <div class="search-container">
                 <div class="controls">
+                    <div class="control-group">
+                        <label for="dayTypeFilter">Dia:</label>
+                        <select id="dayTypeFilter">
+                            <option value="">Todos os dias</option>
+                            <option value="Segunda">Segunda</option>
+                            <option value="Terça">Terça</option>
+                            <option value="Quarta">Quarta</option>
+                            <option value="Quinta">Quinta</option>
+                            <option value="Sexta">Sexta</option>
+                            <option value="Sábado">Sábado</option>
+                            <option value="Domingo">Domingo</option>
+                        </select>
+                    </div>
                     <div class="control-group">
                         <label for="stoneFilter">Stone:</label>
                         <select id="stoneFilter">
@@ -457,11 +466,11 @@
     <script>
         const schedule = {
             "Segunda": { "00:00": { "stone": "Selo", "chest": "Orc" }, "01:00": { "stone": "Shrine", "chest": "Selo" }, "02:00": { "stone": "Arkenum", "chest": "Shrine" }, "03:00": { "stone": "Orc", "chest": "Arkenum" }, "04:00": { "stone": "Selo", "chest": "Orc" }, "05:00": { "stone": "Shrine", "chest": "Selo" }, "06:00": { "stone": "Arkenum", "chest": "Shrine" }, "07:00": { "stone": "Orc", "chest": "Arkenum" }, "08:00": { "stone": "Selo", "chest": "Orc" }, "09:00": { "stone": "Shrine", "chest": "Selo" }, "10:00": { "stone": "Arkenum", "chest": "Shrine" }, "11:00": { "stone": "Orc", "chest": "Arkenum" }, "12:00": { "stone": "Selo", "chest": "Orc" }, "13:00": { "stone": "Shrine", "chest": "Selo" }, "14:00": { "stone": "Arkenum", "chest": "Shrine" }, "15:00": { "stone": "Orc", "chest": "Arkenum" }, "16:00": { "stone": "Selo", "chest": "Orc" }, "17:00": { "stone": "Shrine", "chest": "Selo" }, "18:00": { "stone": "Arkenum", "chest": "Shrine" }, "19:00": { "stone": "Orc", "chest": "Arkenum" }, "20:00": { "stone": "Selo", "chest": "Orc" }, "21:00": { "stone": "Shrine", "chest": "Selo" }, "22:00": { "stone": "Arkenum", "chest": "Shrine" }, "23:00": { "stone": "Orc", "chest": "Arkenum" } },
-            "Terça": { "00:00": { "stone": "Sel", "chest": "Arkanum" }, "01:00": { "stone": "Shrine", "chest": "Orc" }, "02:00": { "stone": "Selo", "chest": "Arkanum" }, "03:00": { "stone": "Arkanum", "chest": "Shrine" }, "04:00": { "stone": "Orc", "chest": "Arkanum" }, "05:00": { "stone": "Selo", "chest": "Orc" }, "06:00": { "stone": "Shrine", "chest": "Selo" }, "07:00": { "stone": "Arkanum", "chest": "Shrine" }, "08:00": { "stone": "Orc", "chest": "Arkanum" }, "09:00": { "stone": "Selo", "chest": "Orc" }, "10:00": { "stone": "Shrine", "chest": "Selo" }, "11:00": { "stone": "Arkanum", "chest": "Shrine" }, "12:00": { "stone": "Orc", "chest": "Arkanum" }, "13:00": { "stone": "Selo", "chest": "Orc" }, "14:00": { "stone": "Shrine", "chest": "Selo" }, "15:00": { "stone": "Arkanum", "chest": "Shrine" }, "16:00": { "stone": "Orc", "chest": "Arkanum" }, "17:00": { "stone": "Selo", "chest": "Orc" }, "18:00": { "stone": "Shrine", "chest": "Selo" }, "19:00": { "stone": "Arkanum", "chest": "Shrine" }, "20:00": { "stone": "Orc", "chest": "Arkanum" }, "21:00": { "stone": "Selo", "chest": "Orc" }, "22:00": { "stone": "Shrine", "chest": "Selo" }, "23:00": { "stone": "Arkanum", "chest": "Shrine" } },
-            "Quarta": { "00:00": { "stone": "Arkanum", "chest": "Orc" }, "01:00": { "stone": "Shrine", "chest": "Arkanum" }, "02:00": { "stone": "Selo", "chest": "Orc" }, "03:00": { "stone": "Arkanum", "chest": "Shrine" }, "04:00": { "stone": "Orc", "chest": "Arkanum" }, "05:00": { "stone": "Orc", "chest": "Arkanum" }, "06:00": { "stone": "Selo", "chest": "Orc" }, "07:00": { "stone": "Arkanum", "chest": "Shrine" }, "08:00": { "stone": "Orc", "chest": "Arkanum" }, "09:00": { "stone": "Orc", "chest": "Arkanum" }, "10:00": { "stone": "Selo", "chest": "Orc" }, "11:00": { "stone": "Shrine", "chest": "Selo" }, "12:00": { "stone": "Arkanum", "chest": "Shrine" }, "13:00": { "stone": "Orc", "chest": "Arkanum" }, "14:00": { "stone": "Shrine", "chest": "Selo" }, "15:00": { "stone": "Shrine", "chest": "Selo" }, "16:00": { "stone": "Arkanum", "chest": "Shrine" }, "17:00": { "stone": "Orc", "chest": "Arkanum" }, "18:00": { "stone": "Shrine", "chest": "Selo" }, "19:00": { "stone": "Orc", "chest": "Arkanum" }, "20:00": { "stone": "Arkanum", "chest": "Shrine" }, "21:00": { "stone": "Selo", "chest": "Orc" }, "22:00": { "stone": "Selo", "chest": "Orc" }, "23:00": { "stone": "Shrine", "chest": "Arkanum" } },
-            "Quinta": { "00:00": { "stone": "Shrine", "chest": "Orc" }, "01:00": { "stone": "Shrine", "chest": "Orc" }, "02:00": { "stone": "Arkenum", "chest": "Shrine" }, "03:00": { "stone": "Orc", "chest": "Arkenum" }, "04:00": { "stone": "Arkenum", "chest": "Shrine" }, "05:00": { "stone": "Selo", "chest": "Orc" }, "06:00": { "stone": "Arkenum", "chest": "Shrine" }, "07:00": { "stone": "Arkenum", "chest": "Shrine" }, "08:00": { "stone": "Selo", "chest": "Orc" }, "09:00": { "stone": "Shrine", "chest": "Selo" }, "10:00": { "stone": "Arkenum", "chest": "Shrine" }, "11:00": { "stone": "Orc", "chest": "Arkenum" }, "12:00": { "stone": "Orc", "chest": "Arkanum" }, "13:00": { "stone": "Selo", "chest": "Orc" }, "14:00": { "stone": "Shrine", "chest": "Selo" }, "15:00": { "stone": "Shrine", "chest": "Selo" }, "16:00": { "stone": "Orc", "chest": "Arkanum" }, "17:00": { "stone": "Selo", "chest": "Orc" }, "18:00": { "stone": "Shrine", "chest": "Selo" }, "19:00": { "stone": "Arkenum", "chest": "Shrine" }, "20:00": { "stone": "Orc", "chest": "Arkanum" }, "21:00": { "stone": "Selo", "chest": "Orc" }, "22:00": { "stone": "Shrine", "chest": "Selo" }, "23:00": { "stone": "Arkenum", "chest": "Arkanum" } },
-            "Sexta": { "00:00": { "stone": "Arkanum", "chest": "Orc" }, "01:00": { "stone": "Orc", "chest": "Arkanum" }, "02:00": { "stone": "Selo", "chest": "Orc" }, "03:00": { "stone": "Arkenum", "chest": "Shrine" }, "04:00": { "stone": "Arkanum", "chest": "Shrine" }, "05:00": { "stone": "Selo", "chest": "Orc" }, "06:00": { "stone": "Shrine", "chest": "Selo" }, "07:00": { "stone": "Arkanum", "chest": "Shrine" }, "08:00": { "stone": "Shrine", "chest": "Selo" }, "09:00": { "stone": "Selo", "chest": "Orc" }, "10:00": { "stone": "Shrine", "chest": "Selo" }, "11:00": { "stone": "Shrine", "chest": "Selo" }, "12:00": { "stone": "Arkanum", "chest": "Shrine" }, "13:00": { "stone": "Orc", "chest": "Arkanum" }, "14:00": { "stone": "Selo", "chest": "Orc" }, "15:00": { "stone": "Selo", "chest": "Orc" }, "16:00": { "stone": "Arkanum", "chest": "Shrine" }, "17:00": { "stone": "Orc", "chest": "Arkanum" }, "18:00": { "stone": "Shrine", "chest": "Selo" }, "19:00": { "stone": "Shrine", "chest": "Selo" }, "20:00": { "stone": "Arkanum", "chest": "Shrine" }, "21:00": { "stone": "Selo", "chest": "Orc" }, "22:00": { "stone": "Selo", "chest": "Orc" }, "23:00": { "stone": "Arkenum", "chest": "Arkanum" } },
-            "Sábado": { "00:00": { "stone": "Shrine", "chest": "Selo" }, "01:00": { "stone": "Shrine", "chest": "Shrine" }, "02:00": { "stone": "Arkenum", "chest": "Selo" }, "03:00": { "stone": "Orc", "chest": "Arkanum" }, "04:00": { "stone": "Shrine", "chest": "Selo" }, "05:00": { "stone": "Orc", "chest": "Arkanum" }, "06:00": { "stone": "Selo", "chest": "Orc" }, "07:00": { "stone": "Shrine", "chest": "Shrine" }, "08:00": { "stone": "Shrine", "chest": "Selo" }, "09:00": { "stone": "Arkanum", "chest": "Shrine" }, "10:00": { "stone": "Orc", "chest": "Arkanum" }, "11:00": { "stone": "Selo", "chest": "Orc" }, "12:00": { "stone": "Shrine", "chest": "Selo" }, "13:00": { "stone": "Arkanum", "chest": "Shrine" }, "14:00": { "stone": "Arkanum", "chest": "Shrine" }, "15:00": { "stone": "Selo", "chest": "Orc" }, "16:00": { "stone": "Shrine", "chest": "Selo" }, "17:00": { "stone": "Arkanum", "chest": "Shrine" }, "18:00": { "stone": "Orc", "chest": "Arkanum" }, "19:00": { "stone": "Selo", "chest": "Orc" }, "20:00": { "stone": "Shrine", "chest": "Selo" }, "21:00": { "stone": "Arkanum", "chest": "Shrine" }, "22:00": { "stone": "Orc", "chest": "Arkanum" }, "23:00": { "stone": "Selo", "chest": "Orc" } },
+            "Terça": { "00:00": { "stone": "Sel", "chest": "Arkanum" }, "01:00": { "stone": "Shrine", "chest": "Orc" }, "02:00": { "stone": "Selo", "chest": "Arkanum" }, "03:00": { "stone": "Arkenum", "chest": "Shrine" }, "04:00": { "stone": "Orc", "chest": "Arkanum" }, "05:00": { "stone": "Selo", "chest": "Orc" }, "06:00": { "stone": "Shrine", "chest": "Selo" }, "07:00": { "stone": "Arkanum", "chest": "Shrine" }, "08:00": { "stone": "Orc", "chest": "Arkanum" }, "09:00": { "stone": "Selo", "chest": "Orc" }, "10:00": { "stone": "Shrine", "chest": "Selo" }, "11:00": { "stone": "Arkenum", "chest": "Shrine" }, "12:00": { "stone": "Orc", "chest": "Arkanum" }, "13:00": { "stone": "Selo", "chest": "Orc" }, "14:00": { "stone": "Shrine", "chest": "Selo" }, "15:00": { "stone": "Arkenum", "chest": "Shrine" }, "16:00": { "stone": "Orc", "chest": "Arkanum" }, "17:00": { "stone": "Selo", "chest": "Orc" }, "18:00": { "stone": "Shrine", "chest": "Selo" }, "19:00": { "stone": "Arkenum", "chest": "Shrine" }, "20:00": { "stone": "Orc", "chest": "Arkanum" }, "21:00": { "stone": "Selo", "chest": "Orc" }, "22:00": { "stone": "Shrine", "chest": "Selo" }, "23:00": { "stone": "Arkenum", "chest": "Shrine" } },
+            "Quarta": { "00:00": { "stone": "Arkanum", "chest": "Orc" }, "01:00": { "stone": "Shrine", "chest": "Arkanum" }, "02:00": { "stone": "Selo", "chest": "Orc" }, "03:00": { "stone": "Arkenum", "chest": "Shrine" }, "04:00": { "stone": "Orc", "chest": "Arkanum" }, "05:00": { "stone": "Orc", "chest": "Arkanum" }, "06:00": { "stone": "Selo", "chest": "Orc" }, "07:00": { "stone": "Arkanum", "chest": "Shrine" }, "08:00": { "stone": "Orc", "chest": "Arkanum" }, "09:00": { "stone": "Orc", "chest": "Arkanum" }, "10:00": { "stone": "Selo", "chest": "Orc" }, "11:00": { "stone": "Shrine", "chest": "Selo" }, "12:00": { "stone": "Arkenum", "chest": "Shrine" }, "13:00": { "stone": "Orc", "chest": "Arkanum" }, "14:00": { "stone": "Shrine", "chest": "Selo" }, "15:00": { "stone": "Shrine", "chest": "Selo" }, "16:00": { "stone": "Arkanum", "chest": "Shrine" }, "17:00": { "stone": "Orc", "chest": "Arkanum" }, "18:00": { "stone": "Shrine", "chest": "Selo" }, "19:00": { "stone": "Orc", "chest": "Arkanum" }, "20:00": { "stone": "Arkanum", "chest": "Shrine" }, "21:00": { "stone": "Selo", "chest": "Orc" }, "22:00": { "stone": "Selo", "chest": "Orc" }, "23:00": { "stone": "Shrine", "chest": "Arkanum" } },
+            "Quinta": { "00:00": { "stone": "Shrine", "chest": "Orc" }, "01:00": { "stone": "Shrine", "chest": "Orc" }, "02:00": { "stone": "Arkenum", "chest": "Shrine" }, "03:00": { "stone": "Orc", "chest": "Arkanum" }, "04:00": { "stone": "Arkenum", "chest": "Shrine" }, "05:00": { "stone": "Selo", "chest": "Orc" }, "06:00": { "stone": "Arkenum", "chest": "Shrine" }, "07:00": { "stone": "Arkenum", "chest": "Shrine" }, "08:00": { "stone": "Selo", "chest": "Orc" }, "09:00": { "stone": "Shrine", "chest": "Selo" }, "10:00": { "stone": "Arkenum", "chest": "Shrine" }, "11:00": { "stone": "Orc", "chest": "Arkanum" }, "12:00": { "stone": "Orc", "chest": "Arkanum" }, "13:00": { "stone": "Selo", "chest": "Orc" }, "14:00": { "stone": "Shrine", "chest": "Selo" }, "15:00": { "stone": "Shrine", "chest": "Selo" }, "16:00": { "stone": "Orc", "chest": "Arkanum" }, "17:00": { "stone": "Selo", "chest": "Orc" }, "18:00": { "stone": "Shrine", "chest": "Selo" }, "19:00": { "stone": "Arkenum", "chest": "Shrine" }, "20:00": { "stone": "Orc", "chest": "Arkanum" }, "21:00": { "stone": "Selo", "chest": "Orc" }, "22:00": { "stone": "Shrine", "chest": "Selo" }, "23:00": { "stone": "Arkenum", "chest": "Arkanum" } },
+            "Sexta": { "00:00": { "stone": "Arkanum", "chest": "Orc" }, "01:00": { "stone": "Orc", "chest": "Arkanum" }, "02:00": { "stone": "Selo", "chest": "Orc" }, "03:00": { "stone": "Arkenum", "chest": "Shrine" }, "04:00": { "stone": "Arkanum", "chest": "Shrine" }, "05:00": { "stone": "Selo", "chest": "Orc" }, "06:00": { "stone": "Shrine", "chest": "Selo" }, "07:00": { "stone": "Arkanum", "chest": "Shrine" }, "08:00": { "stone": "Shrine", "chest": "Selo" }, "09:00": { "stone": "Selo", "chest": "Orc" }, "10:00": { "stone": "Shrine", "chest": "Selo" }, "11:00": { "stone": "Shrine", "chest": "Selo" }, "12:00": { "stone": "Arkanum", "chest": "Shrine" }, "13:00": { "stone": "Orc", "chest": "Arkanum" }, "14:00": { "stone": "Selo", "chest": "Orc" }, "15:00": { "stone": "Selo", "chest": "Orc" }, "16:00": { "stone": "Arkanum", "chest": "Shrine" }, "17:00": { "stone": "Orc", "chest": "Arkanum" }, "18:00": { "stone": "Shrine", "chest": "Selo" }, "19:00": { "stone": "Shrine", "chest": "Selo" }, "20:00": { "stone": "Arkanum", "chest": "Shrine" }, "21:00": { "stone": "Selo", "chest": "Orc" }, "22:00": { "stone": "Selo", "chest": "Orc" }, "23:00": { "stone": "Arkanum", "chest": "Arkanum" } },
+            "Sábado": { "00:00": { "stone": "Shrine", "chest": "Selo" }, "01:00": { "stone": "Shrine", "chest": "Shrine" }, "02:00": { "stone": "Arkenum", "chest": "Selo" }, "03:00": { "stone": "Orc", "chest": "Arkanum" }, "04:00": { "stone": "Shrine", "chest": "Selo" }, "05:00": { "stone": "Orc", "chest": "Arkanum" }, "06:00": { "stone": "Selo", "chest": "Orc" }, "07:00": { "stone": "Shrine", "chest": "Shrine" }, "08:00": { "stone": "Shrine", "chest": "Selo" }, "09:00": { "stone": "Arkenum", "chest": "Shrine" }, "10:00": { "stone": "Orc", "chest": "Arkanum" }, "11:00": { "stone": "Selo", "chest": "Orc" }, "12:00": { "stone": "Shrine", "chest": "Selo" }, "13:00": { "stone": "Arkanum", "chest": "Shrine" }, "14:00": { "stone": "Arkanum", "chest": "Shrine" }, "15:00": { "stone": "Selo", "chest": "Orc" }, "16:00": { "stone": "Shrine", "chest": "Selo" }, "17:00": { "stone": "Arkanum", "chest": "Shrine" }, "18:00": { "stone": "Orc", "chest": "Arkanum" }, "19:00": { "stone": "Selo", "chest": "Orc" }, "20:00": { "stone": "Shrine", "chest": "Selo" }, "21:00": { "stone": "Arkanum", "chest": "Shrine" }, "22:00": { "stone": "Orc", "chest": "Arkanum" }, "23:00": { "stone": "Selo", "chest": "Orc" } },
             "Domingo": { "00:00": { "stone": "Shrine", "chest": "Selo" }, "01:00": { "stone": "Arkanum", "chest": "Shrine" }, "02:00": { "stone": "Orc", "chest": "Arkanum" }, "03:00": { "stone": "Orc", "chest": "Arkanum" }, "04:00": { "stone": "Selo", "chest": "Orc" }, "05:00": { "stone": "Arkanum", "chest": "Shrine" }, "06:00": { "stone": "Orc", "chest": "Arkanum" }, "07:00": { "stone": "Shrine", "chest": "Selo" }, "08:00": { "stone": "Selo", "chest": "Orc" }, "09:00": { "stone": "Shrine", "chest": "Selo" }, "10:00": { "stone": "Arkanum", "chest": "Shrine" }, "11:00": { "stone": "Selo", "chest": "Orc" }, "12:00": { "stone": "Selo", "chest": "Orc" }, "13:00": { "stone": "Shrine", "chest": "Selo" }, "14:00": { "stone": "Arkanum", "chest": "Shrine" }, "15:00": { "stone": "Selo", "chest": "Orc" }, "16:00": { "stone": "Selo", "chest": "Orc" }, "17:00": { "stone": "Arkanum", "chest": "Shrine" }, "18:00": { "stone": "Arkanum", "chest": "Arkanum" }, "19:00": { "stone": "Orc", "chest": "Arkanum" }, "20:00": { "stone": "Selo", "chest": "Orc" }, "21:00": { "stone": "Shrine", "chest": "Selo" }, "22:00": { "stone": "Orc", "chest": "Arkanum" }, "23:00": { "stone": "Orc", "chest": "Arkanum" } }
         };
 
@@ -473,7 +482,7 @@
         }
 
         function createBadge(type, category) {
-            return `<span class="stone-badge ${getBadgeClass(type, category)}">${type}</span>`;
+            return `<span class="${category}-badge ${getBadgeClass(type, category)}">${type}</span>`;
         }
 
         function renderWeeklyTable() {
@@ -488,9 +497,16 @@
                     const data = schedule[day][hour];
                     tr.innerHTML += `
                         <td class="day-column">
-                            ${createBadge(data.stone, 'stone')}
-                            <br>
-                            ${createBadge(data.chest, 'chest')}
+                            <div class="cell-wrapper">
+                                <div>
+                                    <span class="cell-row-label">Stone</span><br>
+                                    ${createBadge(data.stone, 'stone')}
+                                </div>
+                                <div>
+                                    <span class="cell-row-label">Chest</span><br>
+                                    ${createBadge(data.chest, 'chest')}
+                                </div>
+                            </div>
                         </td>
                     `;
                 });
@@ -513,12 +529,15 @@
 
         function searchByTime() {
             const timeInput = document.getElementById('timeSearch').value;
-            const [hours, minutes] = timeInput.split(':');
-            const time = `${String(hours).padStart(2, '0')}:${minutes}`;
+            const dayFilter = document.getElementById('daySearch').value;
+            const [hoursPart, minutes] = timeInput.split(':');
+            const time = `${String(hoursPart).padStart(2, '0')}:${minutes}`;
             const results = document.getElementById('timeResults');
 
             let html = '';
-            days.forEach(day => {
+            const daysToSearch = dayFilter ? [dayFilter] : days;
+            
+            daysToSearch.forEach(day => {
                 const data = schedule[day][time];
                 if (data) {
                     html += `
@@ -548,11 +567,13 @@
         }
 
         function resetSearch() {
+            document.getElementById('daySearch').value = '';
             document.getElementById('timeSearch').value = '12:00';
             document.getElementById('timeResults').innerHTML = '';
         }
 
         function searchByType() {
+            const dayFilter = document.getElementById('dayTypeFilter').value;
             const stone = document.getElementById('stoneFilter').value;
             const chest = document.getElementById('chestFilter').value;
             const results = document.getElementById('typeResults');
@@ -560,7 +581,9 @@
             let html = '';
             let count = 0;
 
-            days.forEach(day => {
+            const daysToSearch = dayFilter ? [dayFilter] : days;
+            
+            daysToSearch.forEach(day => {
                 hours.forEach(hour => {
                     const data = schedule[day][hour];
                     const stoneMatch = !stone || data.stone.toLowerCase() === stone.toLowerCase();
@@ -596,6 +619,7 @@
         }
 
         function resetTypeSearch() {
+            document.getElementById('dayTypeFilter').value = '';
             document.getElementById('stoneFilter').value = '';
             document.getElementById('chestFilter').value = '';
             document.getElementById('typeResults').innerHTML = '';
