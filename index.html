@@ -366,7 +366,6 @@
         <div class="view-tabs">
             <button class="tab-btn active" onclick="switchView('weekly')">📅 Semanal</button>
             <button class="tab-btn" onclick="switchView('search')">🔍 Buscar por Horário</button>
-            <button class="tab-btn" onclick="switchView('type')">🎯 Buscar por Tipo</button>
         </div>
 
         <!-- WEEKLY VIEW -->
@@ -415,50 +414,6 @@
                     <button onclick="resetSearch()" style="background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);">Limpar</button>
                 </div>
                 <div class="results" id="timeResults"></div>
-            </div>
-        </div>
-
-        <!-- SEARCH BY TYPE VIEW -->
-        <div id="type" class="view">
-            <div class="search-container">
-                <div class="controls">
-                    <div class="control-group">
-                        <label for="dayTypeFilter">Dia:</label>
-                        <select id="dayTypeFilter">
-                            <option value="">Todos os dias</option>
-                            <option value="Segunda">Segunda</option>
-                            <option value="Terça">Terça</option>
-                            <option value="Quarta">Quarta</option>
-                            <option value="Quinta">Quinta</option>
-                            <option value="Sexta">Sexta</option>
-                            <option value="Sábado">Sábado</option>
-                            <option value="Domingo">Domingo</option>
-                        </select>
-                    </div>
-                    <div class="control-group">
-                        <label for="stoneFilter">Stone:</label>
-                        <select id="stoneFilter">
-                            <option value="">Todos</option>
-                            <option value="Orc">Orc</option>
-                            <option value="Arkanum">Arkanum</option>
-                            <option value="Shrine">Shrine</option>
-                            <option value="Selo">Selo</option>
-                        </select>
-                    </div>
-                    <div class="control-group">
-                        <label for="chestFilter">Chest:</label>
-                        <select id="chestFilter">
-                            <option value="">Todos</option>
-                            <option value="Orc">Orc</option>
-                            <option value="Arkanum">Arkanum</option>
-                            <option value="Shrine">Shrine</option>
-                            <option value="Selo">Selo</option>
-                        </select>
-                    </div>
-                    <button onclick="searchByType()">Buscar</button>
-                    <button onclick="resetTypeSearch()" style="background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);">Limpar</button>
-                </div>
-                <div class="results" id="typeResults"></div>
             </div>
         </div>
     </div>
@@ -570,59 +525,6 @@
             document.getElementById('daySearch').value = '';
             document.getElementById('timeSearch').value = '12:00';
             document.getElementById('timeResults').innerHTML = '';
-        }
-
-        function searchByType() {
-            const dayFilter = document.getElementById('dayTypeFilter').value;
-            const stone = document.getElementById('stoneFilter').value;
-            const chest = document.getElementById('chestFilter').value;
-            const results = document.getElementById('typeResults');
-
-            let html = '';
-            let count = 0;
-
-            const daysToSearch = dayFilter ? [dayFilter] : days;
-            
-            daysToSearch.forEach(day => {
-                hours.forEach(hour => {
-                    const data = schedule[day][hour];
-                    const stoneMatch = !stone || data.stone.toLowerCase() === stone.toLowerCase();
-                    const chestMatch = !chest || data.chest.toLowerCase() === chest.toLowerCase();
-
-                    if (stoneMatch && chestMatch) {
-                        count++;
-                        html += `
-                            <div class="result-item">
-                                <div>
-                                    <div class="result-label">Dia</div>
-                                    <div class="result-value">${day}</div>
-                                </div>
-                                <div>
-                                    <div class="result-label">Horário</div>
-                                    <div class="result-value">${hour}</div>
-                                </div>
-                                <div>
-                                    <div class="result-label">Stone</div>
-                                    <div>${createBadge(data.stone, 'stone')}</div>
-                                </div>
-                                <div>
-                                    <div class="result-label">Chest</div>
-                                    <div>${createBadge(data.chest, 'chest')}</div>
-                                </div>
-                            </div>
-                        `;
-                    }
-                });
-            });
-
-            results.innerHTML = html ? `<div style="margin-bottom: 20px; color: #94a3b8;"><strong>${count}</strong> resultado(s) encontrado(s)</div>${html}` : '<div class="no-results">Nenhum resultado encontrado</div>';
-        }
-
-        function resetTypeSearch() {
-            document.getElementById('dayTypeFilter').value = '';
-            document.getElementById('stoneFilter').value = '';
-            document.getElementById('chestFilter').value = '';
-            document.getElementById('typeResults').innerHTML = '';
         }
 
         // Render initial view
